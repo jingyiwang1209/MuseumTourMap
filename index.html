@@ -6,14 +6,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Untitled</title>
        <style>
-       html, body { height: 100%; margin: 0; padding: 0; }
+       html, body { height: 100%; margin: 0; padding: 0; font-family: Sans-serif}
        main {height:100%;display: flex;flex-flow: row nowrap}
        #nav {
-        width:30%;
+        width:25%;
+        background-color: #95DEE3;
        }
        #map {
         height:100%;
-        width:70%;
+        width:75%;
        }
        #ul{
         padding: 0;
@@ -21,7 +22,9 @@
         position: relative;
        }
        #li{
-        border:1px solid black;
+        border-bottom:1px solid #fff;
+        padding:5px;
+        color:#2F4F4F;
        }
        #li:hover{
         cursor:pointer;
@@ -39,8 +42,10 @@
         background-color: #95DEE3;
         display:none;
         z-index: 1000;
-        padding:5px;
+        padding:15px;
+        border:3px dashed #92B6D5;
        }
+
        .close {
         position: absolute;
         left:95%;
@@ -55,13 +60,47 @@
        .close:hover{
         cursor: pointer;
        }
+
+       button {
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        border-radius: 5px;
+        font-weight: bolder;
+        width:120px;
+        height:60px;
+        font-size:1.5rem;
+        margin-left:20px;
+       }
+
+       form {
+        padding:10px;
+        margin-top:15px;
+       }
+       form input{
+        width:40%;
+        padding:5px;
+       }
+/*
+       #alert{
+        position:fixed;
+        left:35%;
+        top:40%;
+        width:400px;
+        height:50px;
+        background-color:#f44336;
+        z-index: 1000;
+        color:#fff;
+        text-align: center;
+        line-height: 50px;
+        display: none;
+       }*/
        </style>
     </head>
     <body>
+<!--     <div id='alert'></div> -->
      <main>
          <div id='nav'>
          <form data-bind='submit: processMarker'>
-         <label>Museum name: <input id='name' type='text'></label>
+         <label><input id='name' type='text' placeholder="Museum name" data-bind="valueUpdate: 'keyup', event:{'keyup': check }"></label>
          <button type='submit' id='filter'>Filter</button>
          </form>
          <ul id='ul' data-bind='foreach: museumList'>
@@ -70,16 +109,14 @@
              <div class='info'></div>
              <ul class='description'></ul>
          </div>
-         <li id='li' data-bind="text: $data.title, click"></li>
+         <li id='li' data-bind="text: $data.title, click:$parent.passMarker"></li>
          </ul>
          </div>
 
          <div id='map'></div>
          </div>
-
      </main>
-
-         <script async src="https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing,places&key=AIzaSyDi4h3kLTvET6li9iunTesuDfOgBMVWXqo&callback=initialize"></script>
+         <script async src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places&key=AIzaSyDi4h3kLTvET6li9iunTesuDfOgBMVWXqo&callback=initialize"></script>
         <script src="libs/jquery.min.js"></script>
         <script src="libs/knockout-3.4.2.js"></script>
         <script src="main.js"></script>
