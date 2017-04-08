@@ -60,19 +60,20 @@
     <body>
      <main>
          <div id='nav'>
-         <form data-bind='submit: processMarker1'>
+         <form data-bind='submit: processMarker'>
          <label>Museum name: <input id='name' type='text'></label>
          <button type='submit' id='filter'>Filter</button>
          </form>
-         <ul id='ul' data-bind='foreach: museumMarkerList'>
+         <ul id='ul' data-bind='foreach: museumList'>
          <div id='panel'>
             <span class='close'>&times;</span>
              <div class='info'></div>
              <ul class='description'></ul>
          </div>
-         <li id='li' data-bind="$data.title"></li>
+         <li id='li' data-bind="text: $data.title, click"></li>
          </ul>
          </div>
+
          <div id='map'></div>
          </div>
 

@@ -116,7 +116,7 @@ function initialize(){
 
         var bounds = new google.maps.LatLngBounds();
         var infoWindow=new google.maps.InfoWindow();
-        var li = document.getElementById('li');
+        // var li = document.getElementById('li');
 
 
         for (var i = 0; i<results.length; i++) {
@@ -137,7 +137,6 @@ function initialize(){
             });
 
             museumMarkerList.push(marker);
-            li.innerHTML += '<li>' + result.name + '</li>';
 
             bounds.extend(result.geometry.location);
 
@@ -257,9 +256,18 @@ function initialize(){
 
 }
 
-var viewModel=function(address){
+var viewModel=function(){
+    var self=this;
 
-    this.processMarker1=function(){
+    this.museumList=ko.observableArray([]);
+
+     window.onload=function(){
+        museumMarkerList.forEach(function(museumEle){
+        self.museumList.push(museumEle);
+     });};
+
+
+    this.processMarker=function(){
       for(var i=0;i<museumMarkerList.length;i++){
         museumMarkerList[i].setMap(null);
       }
@@ -282,30 +290,30 @@ var viewModel=function(address){
       });
   };
 
-  this.processMarker2=function(){
-      for(var i=0;i<museumMarkerList.length;i++){
-        museumMarkerList[i].setMap(null);
-      }
-      geocoder = new google.maps.Geocoder();
-      var address = document.getElementById('li');
-      console.log("address:"+address);
-      geocoder.geocode( { 'address': address}, function(results, status) {
-          if (status == 'OK') {
-            map.setCenter(results[0].geometry.location);
-            map.setZoom(16);
-            for(var i=0;i<museumMarkerList.length;i++){
-                  if(museumMarkerList[i].title==address){
-                    museumMarkerList[i].position=results[0].geometry.location;
-                    museumMarkerList[i].setMap(map);
-                  }
+  // this.processMarker2=function(){
+  //     for(var i=0;i<museumMarkerList.length;i++){
+  //       museumMarkerList[i].setMap(null);
+  //     }
+  //     geocoder = new google.maps.Geocoder();
 
-            }
+  //     console.log("address:"+address);
+  //     geocoder.geocode( { 'address': address}, function(results, status) {
+  //         if (status == 'OK') {
+  //           map.setCenter(results[0].geometry.location);
+  //           map.setZoom(16);
+  //           for(var i=0;i<museumMarkerList.length;i++){
+  //                 if(museumMarkerList[i].title==address){
+  //                   museumMarkerList[i].position=results[0].geometry.location;
+  //                   museumMarkerList[i].setMap(map);
+  //                 }
 
-          }else {
-            window.alert('cannot locate the museum!');
-          }
-      });
-  };
+  //           }
+
+  //         }else {
+  //           window.alert('cannot locate the museum!');
+  //         }
+  //     });
+  // };
 
 };
 ko.applyBindings(new viewModel());
