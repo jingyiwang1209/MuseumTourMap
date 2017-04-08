@@ -142,7 +142,6 @@ function initialize(){
 
             marker.addListener('click', function(){
                    populateInfoWindow(this,infoWindow);
-
                    showPanel(this);
             });
        }
@@ -301,8 +300,19 @@ var viewModel=function(){
             if(self.museumList()[i].title.toUpperCase().indexOf(value)<0){
                 self.museumList.remove(self.museumList()[i]);
             }
+        }
+    };
+
+  this.translatePanel=function(){
+
+       var nav=document.getElementById('nav');
+       if(nav.style.width=='50%'){
+          nav.style.width='0';
        }
-};
+       else{
+       nav.style.width='50%';
+       }
+  };
 
 };
 ko.applyBindings(new viewModel());
