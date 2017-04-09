@@ -14,12 +14,12 @@
         list-style: none;
         position: relative;
        }
-       #li{
+       .li{
         border-bottom:1px solid #fff;
         padding:5px;
         color:#2F4F4F;
        }
-       #li:hover{
+       .li:hover{
         cursor:pointer;
        }
        #panoroma{
@@ -72,10 +72,9 @@
         width:40%;
         padding:5px;
        }
-
         .sandwich{
-            display:none;
-        }
+          display:none;
+       }
 
        /*.
        #alert{

@@ -256,8 +256,24 @@ function initialize(){
 
 var viewModel=function(){
     var self=this;
-    this.museumList=ko.observableArray([]);
 
+    // Concern1: to be honest, I feel using ko's array is a worse choice compared
+    //to using DOM to put those markers into HTML tags in the map function above right after the marker was generated one after
+    //another:
+    //var marker = new google.maps.Marker({
+            //     map: map,
+            //     icon: markerImage,
+            //     title: result.name,
+            //     position: result.geometry.location,
+            //     id:result.place_id
+            // });
+    //innerHTML+='<li>marker.title</li'>...
+    //ul.append(innerHTML)...
+
+    //By doing as above, I don't have to use window.onload to wait for the google map to be loaded so that I can
+    //get a stuffed museumMarkerList.If I don't use window.onload, the size of museumMarkerList will be 0 at the following point.
+    //What do you think?
+    this.museumList=ko.observableArray([]);
      window.onload=function(){
         museumMarkerList.forEach(function(museumEle){
         self.museumList.push(museumEle);
@@ -269,6 +285,9 @@ var viewModel=function(){
     };
 
     this.processMarker=function(){
+      // Concern2: I tried to use data-bind:textInput to get the value from input,
+      //but the documentation said it won't work with valueUpdate,which I had to use on
+      //input element. What do you think?
         var address = document.getElementById('name').value;
         geoCoding(address);
    };
@@ -294,14 +313,26 @@ var viewModel=function(){
       });
   }
 
-  this.check=function(){
+  self.check=function(){
+// Concern3: In the for loop, at the beginning, instead of using DOM, I used
+//self.museumList.remove(self.museumList()[i]) to remove the li items that do not
+//contain the string that the user type in. However, if the user deletes what he typed
+//and retype again, then the remaining li items still won't show up because they were already removed
+//when the user typed first time, which is really bad experience, so here I would rather
+//use DOM just to show/hide the li items rather than delete them. I tried to use data-bind:'css: function'
+//on the li item in html, but the function had to be related to this self.check function
+//since what li items should be shown depends on what the user types in. The situiation became
+//complicated so I gave up using data-bind:'css: function' here. What do you think?
        var value = document.getElementById('name').value.toUpperCase();
+       var li=document.querySelectorAll(".li");
         for(var i=0;i<self.museumList().length;i++){
             if(self.museumList()[i].title.toUpperCase().indexOf(value)<0){
-                self.museumList.remove(self.museumList()[i]);
+               li[i].style.display='none';
+            }else{
+               li[i].style.display='block';
             }
         }
-    };
+   };
 
   this.translatePanel=function(){
 

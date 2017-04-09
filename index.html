@@ -15,7 +15,7 @@
 
          <div id='nav'>
          <form data-bind='submit: processMarker'>
-         <label><input id='name' type='text' placeholder="Museum name" data-bind="valueUpdate: 'keyup', event:{'keyup': check }"></label>
+         <label><input id='name' type='text' placeholder="Museum name" data-bind="valueUpdate: 'keyup', event:{'keyup': check}"></label>
          <button type='submit' id='filter'>Filter</button>
          </form>
          <ul id='ul' data-bind='foreach: museumList'>
@@ -24,7 +24,7 @@
              <div class='info'></div>
              <ul class='description'></ul>
          </div>
-         <li id='li' data-bind="text: $data.title, click:$parent.passMarker"></li>
+         <li class='li' data-bind="text: $data.title, click:$parent.passMarker"></li>
          </ul>
          </div>
 
