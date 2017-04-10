@@ -20,22 +20,41 @@
         left:0;
         z-index: 100;
         transition: .6s ease;
-       }
+    }
+
     #map {
         width:100%;
-       }
-    #panel{
+    }
+
+    #panel {
         position: fixed;
         left:0;
         bottom:0;
         width:80%;
         height:100%;
-       }
-    .sandwich{
+    }
+
+    .sandwich {
         display:block;
     }
-     #panoroma{
+
+     #panoroma {
         width:300px;
         height:200px;
-       }
+    }
+}
+@media screen and (max-width:650px) {
+     #directionPanel {
+        position: absolute;
+        background-color: transparent;
+        color: #D2691E;
+        height: 250px;
+        line-height: 50px;
+        padding:0;
+        text-align: left;
+        width:100%;
+   }
+
+     select {display: block;border:1px solid #D2691E;}
+
 }

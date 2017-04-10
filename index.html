@@ -10,6 +10,8 @@
     </head>
     <body>
 <!--     <div id='alert'></div> -->
+
+
      <main>
       <div class='sandwich' style="position: fixed; top:2px;left:2px;z-index: 10000;font-size: 4rem;" data-bind="click:translatePanel">&#9776;</div>
 
@@ -28,7 +30,33 @@
          </ul>
          </div>
 
+        <div id="directionPanel">
+         <!-- data-bind="options: museumList, optionsText: function(item) {
+                       return item.title}, optionsCaption: 'Please choose...'" -->
+         <!-- data-bind="options: museumList, optionsText: function(item) {
+                       return item.title}, optionsCaption: 'Please choose...'" -->
+          <strong>From:</strong>
+          <select id="start" class='direction'><
+          </select>
+
+          <strong>To:</strong>
+          <select id="end" class='direction'>
+          </select>
+
+         <strong>Travel mode: </strong>
+          <select id="mode" class='mode'>
+          <option value="DRIVING">Driving</option>
+          <option value="WALKING">Walking</option>
+          <option value="BICYCLING">Bicycling</option>
+          <option value="TRANSIT">Transit</option>
+          </select></strong>
+         </div>
+
+         <div id='detailedDirectiron'></div>
+
          <div id='map'></div>
+         <button id='forMarker' class='showMarkers' data-bind='click:showAllMarkers'>Show All Markers</button>
+         <button id='forMarker' class='hideMarkers' data-bind='click:hideAllMarkers'>Hide All Markers</button>
          </div>
      </main>
          <script async src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places&key=AIzaSyDi4h3kLTvET6li9iunTesuDfOgBMVWXqo&callback=initialize"></script>

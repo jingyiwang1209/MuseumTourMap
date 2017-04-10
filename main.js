@@ -86,6 +86,9 @@ function initialize(){
                     ]
                }
           ],{name: 'Blue world'});
+
+
+
     map = new google.maps.Map(document.getElementById("map"), {
         center: sanFrancisco,
         zoom: 13,
@@ -96,6 +99,8 @@ function initialize(){
     });
     map.mapTypes.set('styled_map', styledMapType);
     map.setMapTypeId('roadmap');
+
+
 
    //request the museum list in San Francisco
     var request ={
@@ -117,8 +122,8 @@ function initialize(){
 
         var bounds = new google.maps.LatLngBounds();
         var infoWindow=new google.maps.InfoWindow();
-        // var li = document.getElementById('li');
-
+        var directions=document.getElementsByClassName('direction');
+        var optionValue;
 
         for (var i = 0; i<results.length; i++) {
             var result=results[i];
@@ -145,9 +150,54 @@ function initialize(){
                    populateInfoWindow(this,infoWindow);
                    showPanel(this);
             });
-       }
+         }
           map.fitBounds(bounds);
-    }
+          for(var j=0;j<museumMarkerList.length;j++){
+                  optionValue+='<option>'+museumMarkerList[j].title+'</option>';
+            }
+          for(var k=0;k<directions.length;k++){
+
+                  directions[k].innerHTML=optionValue;
+            }
+
+      }
+
+       var directionsDisplay = new google.maps.DirectionsRenderer;
+       var directionsService = new google.maps.DirectionsService;
+       directionsDisplay.setMap(map);
+       var detailedDirection=document.getElementById('detailedDirectiron');
+       directionsDisplay.setPanel(detailedDirection);
+       var control = document.getElementById('directionPanel');
+        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(control);
+
+        var onChangeHandler = function() {
+          calculateAndDisplayRoute(directionsService, directionsDisplay,detailedDirection);
+        };
+        detailedDirection.addEventListener('click',function(){this.style.display='none';directionsDisplay.setMap(null)});
+        document.getElementById('start').addEventListener('change', onChangeHandler);
+        document.getElementById('end').addEventListener('change', onChangeHandler);
+        document.getElementById('mode').addEventListener('change', onChangeHandler);
+
+      }
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay,detailedDirection) {
+        var start = document.getElementById('start').value;
+        var end = document.getElementById('end').value;
+
+        directionsDisplay.setMap(map);
+        detailedDirection.style.display='block';
+        directionsService.route({
+          origin: start,
+          destination: end,
+          travelMode: document.getElementById('mode').value,
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
 
     function populateInfoWindow(marker,infoWindow){
 
@@ -238,16 +288,15 @@ function initialize(){
                 for(var i=0;i<articleList.length;i++){
                    description.html('');
                    var url='https://en.wikipedia.org/wiki/'+articleList[i];
-                   description.append('<li>Wiki: <a href="'+url+'">'+articleList[i]+'</a></li>');
+                   description.append('<li>Wiki: <a href="'+url+'" target="_blank">'+articleList[i]+'</a></li>');
                 }
                 clearTimeout(timer);
             });
 
           $('.close').on('click',function(){
-          console.log('ho');
-          $('#panel').css('display','none');
+               $('#panel').css('display','none');
         });
-    }
+
 }
 
 var viewModel=function(){
@@ -331,15 +380,27 @@ var viewModel=function(){
    };
 
   this.translatePanel=function(){
-         var nav=document.getElementById('nav');
-         if(nav.style.width=='50%'){
-            nav.style.width='0';
-         }
-         else{
-         nav.style.width='50%';
+       var nav=document.getElementById('nav');
+       if(nav.style.width=='50%'){
+          nav.style.width='0';
        }
+       else{
+       nav.style.width='50%';
+     }
   };
 
+  this.showAllMarkers=function(){
+      for(var i=0;i<self.museumList().length;i++){
+            self.museumList()[i].setMap(map);
+            map.setZoom(13);
+      }
+  };
+
+  this.hideAllMarkers=function(){
+      for(var i=0;i<self.museumList().length;i++){
+            self.museumList()[i].setMap(null);
+      }
+  };
 };
 ko.applyBindings(new viewModel());
 
