@@ -97,6 +97,7 @@ function initialize(){
     map.mapTypes.set('styled_map', styledMapType);
     map.setMapTypeId('roadmap');
 
+   //request the museum list in San Francisco
     var request ={
         location:sanFrancisco,
         radius:'1800',
@@ -174,7 +175,7 @@ function initialize(){
     }
 
     function showPanel(marker){
-        document.querySelector('#panel').style.display='block';
+       $('#panel').css('display','block');
         var info=$('.info');
         var description =$('.description');
         var value=marker.title;
@@ -183,9 +184,7 @@ function initialize(){
           service.getDetails({
             placeId: marker.id
           }, function(place, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          // Set the marker property on this infowindow so it isn't created again.
-          // console.log(place);
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
           var innerHTML = '<div>';
           if (place.name) {
             innerHTML += '<strong>' + place.name + '</strong>';
@@ -230,8 +229,8 @@ function initialize(){
         $.ajax({
             url: wikiUrl,
             dataType:'jsonp',
-            success:function(response){
-                var articleList=response[1];
+            method:'GET'}).done(function(response){
+              var articleList=response[1];
                 if(articleList.length===0){
                     description.html('');
                     return;
@@ -241,17 +240,14 @@ function initialize(){
                    var url='https://en.wikipedia.org/wiki/'+articleList[i];
                    description.append('<li>Wiki: <a href="'+url+'">'+articleList[i]+'</a></li>');
                 }
-
                 clearTimeout(timer);
-            }
-        });
+            });
 
-        $('.close').on('click',function(){
-            $('#panel').css('display','none');
+          $('.close').on('click',function(){
+          console.log('ho');
+          $('#panel').css('display','none');
         });
-
     }
-
 }
 
 var viewModel=function(){
@@ -288,9 +284,9 @@ var viewModel=function(){
       // Concern2: I tried to use data-bind:textInput to get the value from input,
       //but the documentation said it won't work with valueUpdate,which I had to use on
       //input element. What do you think?
-        var address = document.getElementById('name').value;
+        var address = $('#name').val();
         geoCoding(address);
-   };
+    };
 
   function geoCoding(name){
     geocoder = new google.maps.Geocoder();
@@ -300,15 +296,15 @@ var viewModel=function(){
             map.setZoom(16);
             for(var i=0;i<museumMarkerList.length;i++){
                   museumMarkerList[i].setMap(null);
-                  if(museumMarkerList[i].title==name){
+                  if(museumMarkerList[i].title.toUpperCase()==name.toUpperCase()){
                     museumMarkerList[i].position=results[0].geometry.location;
                     museumMarkerList[i].setMap(map);
                   }else{
-                    window.alert('Sorry');
+                    window.alert('Sorry,we cannot locate your museum. Please check your type.');
                   }
             }
           }else {
-            window.alert('cannot locate the museum!');
+            window.alert('Cannot locate the museum!');
           }
       });
   }
@@ -323,8 +319,8 @@ var viewModel=function(){
 //on the li item in html, but the function had to be related to this self.check function
 //since what li items should be shown depends on what the user types in. The situiation became
 //complicated so I gave up using data-bind:'css: function' here. What do you think?
-       var value = document.getElementById('name').value.toUpperCase();
-       var li=document.querySelectorAll(".li");
+       var value = $('#name').val().toUpperCase();
+       var li=$(".li");
         for(var i=0;i<self.museumList().length;i++){
             if(self.museumList()[i].title.toUpperCase().indexOf(value)<0){
                li[i].style.display='none';
@@ -335,13 +331,12 @@ var viewModel=function(){
    };
 
   this.translatePanel=function(){
-
-       var nav=document.getElementById('nav');
-       if(nav.style.width=='50%'){
-          nav.style.width='0';
-       }
-       else{
-       nav.style.width='50%';
+         var nav=document.getElementById('nav');
+         if(nav.style.width=='50%'){
+            nav.style.width='0';
+         }
+         else{
+         nav.style.width='50%';
        }
   };
 

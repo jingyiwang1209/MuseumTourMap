@@ -5,28 +5,34 @@
         width:25%;
         background-color: #95DEE3;
        }
+
        #map {
         height:100%;
         width:75%;
        }
-       #ul{
+
+       #ul {
         padding: 0;
         list-style: none;
         position: relative;
        }
-       .li{
+
+       .li {
         border-bottom:1px solid #fff;
         padding:5px;
         color:#2F4F4F;
        }
-       .li:hover{
+
+       .li:hover {
         cursor:pointer;
        }
-       #panoroma{
+
+       #panoroma {
         width:600px;
         height:400px;
        }
-       #panel{
+
+       #panel {
         position: absolute;
         left:0;
         top:0;
@@ -44,13 +50,13 @@
         left:95%;
         top:10px;
         font-size: 24px;
-
        }
-       .description{
+       .description {
         padding: 0;
         list-style: none;
        }
-       .close:hover{
+
+       .close:hover {
         cursor: pointer;
        }
 
@@ -68,12 +74,16 @@
         padding:10px;
         margin-top:15px;
        }
-       form input{
+
+       form input {
         width:40%;
         padding:5px;
        }
-        .sandwich{
+       .sandwich {
           display:none;
+       }
+       .sandwich:hover {
+          cursor: pointer;
        }
 
        /*.
