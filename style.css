@@ -33,12 +33,11 @@ height:400px;
 }
 
 #panel {
-position: absolute;
+position: fixed;
 left:0;
-top:0;
-width:100%;
-height:110%;
-background-color: #95DEE3;
+top:100px;
+width:30%;
+background-color: #fff;
 display:none;
 z-index: 1000;
 padding:15px;
