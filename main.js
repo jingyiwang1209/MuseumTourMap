@@ -181,8 +181,8 @@ function initialize(){
       }
 
       function calculateAndDisplayRoute(directionsService, directionsDisplay,detailedDirection) {
-        var start = document.getElementById('start').value;
-        var end = document.getElementById('end').value;
+        var start = document.getElementById('start').value+', San Francisco';
+        var end = document.getElementById('end').value+', San Francisco';
 
         directionsDisplay.setMap(map);
         detailedDirection.style.display='block';
