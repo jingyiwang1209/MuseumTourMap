@@ -1,64 +1,7 @@
-@media screen and (max-width:1140px) {
-    button {
-        width:140px;
-        height:40px;
-        margin-left:0;
-       }
-       form input{
-        width:95%;
-        padding:5px;
-      }
-}
-
-@media screen and (max-width:780px) {
-    #nav {
-        width:0;
-        height: 100%;
-        overflow: hidden;
-        position: fixed;
-        top:0;
-        left:0;
-        z-index: 100;
-        transition: .6s ease;
-        font-size: 12px;
-    }
-
-    #filter {
-        height:40px;
-        font-size:1rem;
-    }
-
-    #map {
-        width:100%;
-    }
-
-    #panel {
-        width:80%;
-        top:50%;
-    }
-
-    .sandwich {
-        display:block;
-    }
-
-     #panoroma {
-        width:300px;
-        height:200px;
-    }
-
-    #detailedDirectiron {
-        left:50%;
-        width:50%;
-    }
-}
-@media screen and (max-width:650px) {
-     #directionPanel {
-        background-color: transparent;
-        color: #D2691E;
-        height: 250px;
-        padding:0;
-        width:100%;
+@media screen and (max-width:930px) {
+   select {
+    display: block;
    }
-
-     select {display: block;border:1px solid #D2691E;}
 }
+
+

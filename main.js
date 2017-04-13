@@ -87,19 +87,17 @@ function initialize(){
                }
           ],{name: 'Blue world'});
 
-
-
     map = new google.maps.Map(document.getElementById("map"), {
         center: sanFrancisco,
         zoom: 13,
         mapTypeControlOptions: {
-                    mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
+                    mapTypeIds: [
                             'styled_map']
-        }
+        },
+        disableDefaultUI: true
     });
     map.mapTypes.set('styled_map', styledMapType);
-    map.setMapTypeId('roadmap');
-
+    map.setMapTypeId('styled_map');
 
 
    //request the museum list in San Francisco
@@ -148,32 +146,33 @@ function initialize(){
 
             marker.addListener('click', function(){
                    populateInfoWindow(this,infoWindow);
-                   showPanel(this);
+                   showDetails(this,infoWindow);
             });
          }
           map.fitBounds(bounds);
+          map.setCenter(sanFrancisco);
+          map.setZoom(13);
           for(var j=0;j<museumMarkerList.length;j++){
                   optionValue+='<option>'+museumMarkerList[j].title+'</option>';
             }
           for(var k=0;k<directions.length;k++){
-
                   directions[k].innerHTML=optionValue;
             }
-
       }
 
        var directionsDisplay = new google.maps.DirectionsRenderer;
        var directionsService = new google.maps.DirectionsService;
        directionsDisplay.setMap(map);
        var detailedDirection=document.getElementById('detailedDirectiron');
+       var closeDirection=document.getElementById('closeDirection');
        directionsDisplay.setPanel(detailedDirection);
        var control = document.getElementById('directionPanel');
-        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(control);
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
 
-        var onChangeHandler = function() {
+       var onChangeHandler = function() {
           calculateAndDisplayRoute(directionsService, directionsDisplay,detailedDirection);
-        };
-        detailedDirection.addEventListener('click',function(){this.style.display='none';directionsDisplay.setMap(null)});
+      };
+        closeDirection.addEventListener('click',function(){detailedDirection.style.display='none';directionsDisplay.setMap(null)});
         document.getElementById('start').addEventListener('change', onChangeHandler);
         document.getElementById('end').addEventListener('change', onChangeHandler);
         document.getElementById('mode').addEventListener('change', onChangeHandler);
@@ -186,6 +185,7 @@ function initialize(){
 
         directionsDisplay.setMap(map);
         detailedDirection.style.display='block';
+        closeDirection.style.display='block';
         directionsService.route({
           origin: start,
           destination: end,
@@ -203,101 +203,88 @@ function initialize(){
 
            var streetViewService=new google.maps.StreetViewService();
            var radius=50;
-
            function getStreetView(data){
               var nearStreetViewLocation = data.location.latLng;
-              var heading = google.maps.geometry.spherical.computeHeading(
-                nearStreetViewLocation, marker.position);
-                infoWindow.setContent('<div>' + marker.title + '</div><div id="panoroma"></div>');
-
-                var panoramaOptions = {
+              var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
+              infoWindow.setContent('<div>' + marker.title + '</div><div id="panoroma"></div>');
+              var panoramaOptions = {
                       position: nearStreetViewLocation,
                       pov: {
                         heading: heading,
                         pitch: 30
                       }
                };
-                var panorama = new google.maps.StreetViewPanorama(
-                  document.getElementById('panoroma'), panoramaOptions);
-        }
+              var panorama = new google.maps.StreetViewPanorama(document.getElementById('panoroma'), panoramaOptions);
+          }
           streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-           infoWindow.open(map, marker);
+          infoWindow.open(map, marker);
     }
 
-    function showPanel(marker){
-       $('#panel').css('display','block');
-        var info=$('.info');
-        var description =$('.description');
-        var value=marker.title;
 
-         var service = new google.maps.places.PlacesService(map);
+
+
+        function showDetails(marker){
+           var service = new google.maps.places.PlacesService(map);
+           var infoWindow=new google.maps.InfoWindow();
+           var innerHTML;
           service.getDetails({
             placeId: marker.id
           }, function(place, status) {
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
-          var innerHTML = '<div>';
-          if (place.name) {
-            innerHTML += '<strong>' + place.name + '</strong>';
-          }
-          if (place.website) {
-            innerHTML += '<br><a href="'+place.website+'">'+ place.website+'</a>';
-          }
-          if (place.rating) {
-            innerHTML += '<br><strong style="color: #DA413D">Rating: '+ place.rating+'</strong>';
-          }
-          if (place.formatted_address) {
-            innerHTML += '<br>' + place.formatted_address;
-          }
-          if (place.formatted_phone_number) {
-            innerHTML += '<br>' + place.formatted_phone_number;
-          }
-          if (place.opening_hours) {
-            innerHTML += '<br><br><strong>Hours:</strong><br>' +
-                place.opening_hours.weekday_text[0] + '<br>' +
-                place.opening_hours.weekday_text[1] + '<br>' +
-                place.opening_hours.weekday_text[2] + '<br>' +
-                place.opening_hours.weekday_text[3] + '<br>' +
-                place.opening_hours.weekday_text[4] + '<br>' +
-                place.opening_hours.weekday_text[5] + '<br>' +
-                place.opening_hours.weekday_text[6];
-          }
-          if (place.photos) {
-            innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
-                {maxHeight: 100, maxWidth: 200}) + '">';
-          }
-          innerHTML += '</div>';
-          info.html(innerHTML);
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                innerHTML= '<div>';
+                if (place.name) {
+                  innerHTML += '<strong>' + place.name + '</strong>';
+                }
+                if (place.website) {
+                  innerHTML += '<br><a href="'+place.website+'">'+ place.website+'</a>';
+                }
+                if (place.rating) {
+                  innerHTML += '<br><strong style="color: #DA413D">Rating: '+ place.rating+'</strong>';
+                }
+                if (place.formatted_address) {
+                  innerHTML += '<br>' + place.formatted_address;
+                }
+                if (place.formatted_phone_number) {
+                  innerHTML += '<br>' + place.formatted_phone_number;
+                }
+                if (place.opening_hours) {
+                  innerHTML += '<br><br><strong>Hours:</strong><br>' +
+                      place.opening_hours.weekday_text[0] + '<br>' +
+                      place.opening_hours.weekday_text[1] + '<br>' +
+                      place.opening_hours.weekday_text[2] + '<br>' +
+                      place.opening_hours.weekday_text[3] + '<br>' +
+                      place.opening_hours.weekday_text[4] + '<br>' +
+                      place.opening_hours.weekday_text[5] + '<br>' +
+                      place.opening_hours.weekday_text[6];
+                 }
+              innerHTML += '</div>';
+              infoWindow.setContent(innerHTML);
+                infoWindow.open(map, marker);
 
-       }
-   });
-        var wikiUrl='https://en.wikipedia.org/w/api.php?action=opensearch&search='+value+'&format=json&callback=wikiCallback';
-        // console.log('value: '+value);
-        var timer=setTimeout(function(){
-         description.text('No info from wikipedia').css('color','#006E51');
-        },3000);
+               }
+             }
+          );
 
+        var wikiUrl='https://en.wikipedia.org/w/api.php?action=opensearch&search='+marker.title+'&format=json&callback=wikiCallback';
         $.ajax({
             url: wikiUrl,
             dataType:'jsonp',
             method:'GET'}).done(function(response){
               var articleList=response[1];
                 if(articleList.length===0){
-                    description.html('');
+                    innerHTML+='<div>Sorry, no related Wiki info.</<div>';
                     return;
                    }
                 for(var i=0;i<articleList.length;i++){
-                   description.html('');
                    var url='https://en.wikipedia.org/wiki/'+articleList[i];
-                   description.append('<li>Wiki: <a href="'+url+'" target="_blank">'+articleList[i]+'</a></li>');
+                   innerHTML +='<div>Wiki: <a href="'+url+'" target="_blank">'+articleList[i]+'</a></li>';
                 }
-                clearTimeout(timer);
-            });
 
-          $('.close').on('click',function(){
-               $('#panel').css('display','none');
-        });
+                infoWindow.setContent(innerHTML);
+                infoWindow.open(map, marker);
 
-}
+           });
+  }
 
 var viewModel=function(){
     var self=this;
@@ -368,39 +355,38 @@ var viewModel=function(){
 //on the li item in html, but the function had to be related to this self.check function
 //since what li items should be shown depends on what the user types in. The situiation became
 //complicated so I gave up using data-bind:'css: function' here. What do you think?
+       console.log('sa');
        var value = $('#name').val().toUpperCase();
        var li=$(".li");
         for(var i=0;i<self.museumList().length;i++){
             if(self.museumList()[i].title.toUpperCase().indexOf(value)<0){
                li[i].style.display='none';
             }else{
-               li[i].style.display='block';
+               li[i].style.display='inline-block';
             }
         }
    };
 
-  this.translatePanel=function(){
-       var nav=document.getElementById('nav');
-       if(nav.style.width=='50%'){
-          nav.style.width='0';
-       }
-       else{
-       nav.style.width='50%';
-     }
+  this.toggleDisplay=function(){
+     $('.nav').toggleClass('showNav');
+     $('.map').toggleClass('shrinkMap');
   };
 
-  this.showAllMarkers=function(){
+  this.translatePanel=function(){
+       var nav=document.getElementsByClassName('nav')[0];
+       nav.classList.toggle('navDisplay');
+  };
+  this.counter=0;
+  this.toggleMarkers=function(){
+    self.counter++;
       for(var i=0;i<self.museumList().length;i++){
+          if(self.counter % 2 ===0){
             self.museumList()[i].setMap(map);
             map.setZoom(13);
+          }else {self.museumList()[i].setMap(null);}
       }
   };
 
-  this.hideAllMarkers=function(){
-      for(var i=0;i<self.museumList().length;i++){
-            self.museumList()[i].setMap(null);
-      }
-  };
 };
 ko.applyBindings(new viewModel());
 
