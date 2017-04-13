@@ -1,14 +1,13 @@
 # Museum tour map
 
-## This is an application for the users who are interested in visiting the museums in San Francisco, California, or just learning the history, and other related information about those museums.
+## This is an application for the users who want to visit the museums in San Francisco or who just want to learn the history and the business information about those museums.
 
 ## Instructions:
-### 1. Open the app. You will see two areas: a navigation on the left side, and a map on the right side of the page. The navi area lists all the names of the museums in San Francisco (radius:1800). In the map, all the markers that mark those museums by default are turned on. The navi area and the map are in sync with Google server.
+### 1. Open the app with your browsers. You will see a map with multiple markers, by default. The markers mark all the museums in San Francisco (radius:1800).
 
-### 2. Directly click on the museum name in the list, or type in a museum name in the textbox next to the Filter button then click the button. Either way will initialize a zoomed-in map, only with the marker of that clicked or typed museum inside, which is convenient for users to check out the museum you are interested in.
-### Warning: a typed name out of the list will prompt an alert.
+### 2. You can directly click on any of the markers. Two info windows about the museum will show up afterwards. To revert to the default presence of the markers and the map, click the Museum icon on the right side of the map.
 
-### 3. Click the marker in the map. A information window with a panorama image will pop up above the marker. Meanwhile, another information window about more details such as: address, website, business hour, rating, wiki (if any), and so on in the navi area will pop up too. Users feel free to click the website and wiki (if any) links for details about the museum. All of these information are in sync with Google server and Wiki server. Once done reading, click the 'x' to close the windows.
+### 3. You can also click the Search Icon on the right side of the page. Once it is clicked, a panel of a list of museums will show up from the bottom. You can either type in the search box and click Filter button or just click a name of the list. The two info windows mentioned in Step 2 will show up.
 
 ### 4. By far users have checked out quite amount of information about their interested museums. To revert the app back the original layout, click 'Show All Markers' button on the right corner, then the map will go back to its original status, with all markers on.
 ### Hint: you can click 'Hide All Markers' to close all the markers if you feel annoyed.

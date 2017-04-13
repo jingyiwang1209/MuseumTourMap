@@ -376,15 +376,13 @@ var viewModel=function(){
        var nav=document.getElementsByClassName('nav')[0];
        nav.classList.toggle('navDisplay');
   };
-  this.counter=0;
+
   this.toggleMarkers=function(){
-    self.counter++;
       for(var i=0;i<self.museumList().length;i++){
-          if(self.counter % 2 ===0){
             self.museumList()[i].setMap(map);
             map.setZoom(13);
-          }else {self.museumList()[i].setMap(null);}
       }
+
   };
 
 };
