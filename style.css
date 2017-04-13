@@ -130,22 +130,23 @@ select, strong {
 span {
   font-size: 2rem;
 }
-
 span:hover {
   cursor: pointer;
 }
-/*.
+
 #alert{
-position:fixed;
-left:35%;
-top:40%;
-width:400px;
-height:50px;
-background-color:#f44336;
-z-index: 1000;
-color:#fff;
-text-align: center;
-line-height: 50px;
-display: none;
-}*/
+  position:absolute;
+  left:20%;
+  top:40%;
+  background-color:#f44336;
+  z-index: 1000;
+  color:#fff;
+  padding:5px;
+  display: none;
+}
+
+#alert::after{
+  content: 'Sorry, the museum does not exist. Please check your type.';
+  font-size: 2rem;
+}
 

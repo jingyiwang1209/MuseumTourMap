@@ -258,8 +258,8 @@ function initialize(){
                       place.opening_hours.weekday_text[6];
                  }
               innerHTML += '</div>';
-              infoWindow.setContent(innerHTML);
-                infoWindow.open(map, marker);
+              // infoWindow.setContent(innerHTML);
+              //   infoWindow.open(map, marker);
 
                }
              }
@@ -272,8 +272,10 @@ function initialize(){
             method:'GET'}).done(function(response){
               var articleList=response[1];
                 if(articleList.length===0){
-                    innerHTML+='<div>Sorry, no related Wiki info.</<div>';
-                    return;
+                    innerHTML+='<br><div>No results found in wikipedia.</<div></br>';
+                     infoWindow.setContent(innerHTML);
+                     infoWindow.open(map, marker);
+                      return;
                    }
                 for(var i=0;i<articleList.length;i++){
                    var url='https://en.wikipedia.org/wiki/'+articleList[i];
@@ -321,7 +323,16 @@ var viewModel=function(){
       //but the documentation said it won't work with valueUpdate,which I had to use on
       //input element. What do you think?
         var address = $('#name').val();
-        geoCoding(address);
+        var listCompare=[];
+        for(var i=0;i<museumMarkerList.length;i++){
+          if(museumMarkerList[i].title.toUpperCase()!==name.toUpperCase()){
+              listCompare.push(museumMarkerList[i].title);
+          }
+        }
+        if(listCompare.length==museumMarkerList.length){
+          $('#alert').css('display','block');
+          $('#alertClose').on('click',function(){$('#alert').css('display','none');});
+        }else{geoCoding(address);}
     };
 
   function geoCoding(name){
@@ -333,10 +344,8 @@ var viewModel=function(){
             for(var i=0;i<museumMarkerList.length;i++){
                   museumMarkerList[i].setMap(null);
                   if(museumMarkerList[i].title.toUpperCase()==name.toUpperCase()){
-                    museumMarkerList[i].position=results[0].geometry.location;
-                    museumMarkerList[i].setMap(map);
-                  }else{
-                    window.alert('Sorry,we cannot locate your museum. Please check your type.');
+                        museumMarkerList[i].position=results[0].geometry.location;
+                        museumMarkerList[i].setMap(map);
                   }
             }
           }else {
@@ -355,7 +364,6 @@ var viewModel=function(){
 //on the li item in html, but the function had to be related to this self.check function
 //since what li items should be shown depends on what the user types in. The situiation became
 //complicated so I gave up using data-bind:'css: function' here. What do you think?
-       console.log('sa');
        var value = $('#name').val().toUpperCase();
        var li=$(".li");
         for(var i=0;i<self.museumList().length;i++){
@@ -373,8 +381,7 @@ var viewModel=function(){
   };
 
   this.translatePanel=function(){
-       var nav=document.getElementsByClassName('nav')[0];
-       nav.classList.toggle('navDisplay');
+       $('.nav').toggleClass('navDisplay');
   };
 
   this.toggleMarkers=function(){
