@@ -7,7 +7,7 @@
 
 ### 2. Click on any one of the markers. Two info windows about the clicked museum will appear. One is a panorama of the museum; the other presents the business info and the wiki info (if any) about the museum. To make browsers revert to the default presence of the markers and the map, click the 'Museum' Icon on the right side of the map.
 
-### 3. Click on the 'Search' Icon on the right side of the page to toggle the presence of a panel with a list of museums. Either type in the search box and click 'Filter' button/press <kbd>Enter</kbd> or just click a name on the list in the panel. The two info windows mentioned in Step 2 will appear.
+### 3. Click on the 'Search' Icon on the right side of the page to toggle the presence of a panel with a list of museums. Either type in the search box and click 'Search' button/press <kbd>Enter</kbd> or just click a name on the list in the panel. The two info windows mentioned in Step 2 will appear.
 ### *Warning: If the typed value does not match any in the list of museums, a pop-up alert will prompt you to recheck your typing. Simply click the 'x' button to close the alert window.*
 ### 4. Use the ‘From, To, Travel mode' panel at the top of the page to plan a tour of multiple museums. By selecting a starting point, a destination, and a transportation mode, you will see a highlighted route between two museums and a step-by-step guide about how to travel from one to another. When you are finished, simply click the 'x' button in the top left corner of the guide to close it and to remove the route.
 

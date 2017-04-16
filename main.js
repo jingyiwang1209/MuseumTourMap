@@ -223,6 +223,7 @@ function populateBizWiki(marker){
        });
 }
 
+//Animate the marker when it is clicked
 function animateMarker(marker){
    if (marker.getAnimation() !== null) {
           marker.setAnimation(null);
