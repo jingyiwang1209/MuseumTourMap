@@ -37,8 +37,8 @@
 
         <div class='nav'>
         <form data-bind='submit: processMarker'>
-            <label><input id='name' type='text' placeholder="Museum name" data-bind="valueUpdate: 'keyup', event:{'keyup': check}"></label>
-            <button type='submit' id='filter'>Filter</button>
+            <label><input id='name' type='text' placeholder="Museum name" data-bind="textInput:name, event:{keyup: check}"></label>
+            <button type='submit' id='searchButton'>Search</button>
         </form>
 
         <ul id='ul' data-bind='foreach: museumList'>

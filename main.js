@@ -4,10 +4,16 @@ var geocoder;
 var placeService;
 var museumMarkerList=[];
 
+
 function initialize(){
     initializeMap();
     initializeData();
-    ko.applyBindings(new viewModel());
+    if(typeof map === 'undefined' || map === null){
+       window.alert('The map cannot be loaded.');
+    }else {
+      ko.applyBindings(new viewModel());
+    }
+
     initializeTransMode();
 }
 // initialize a Google map and customize the style of the map
@@ -58,10 +64,7 @@ function initializeMap(){
     map = new google.maps.Map(document.getElementById("map"), {
         center: sanFrancisco,
         zoom: 13,
-        mapTypeControlOptions: {
-                    mapTypeIds: [
-                            'styled_map']
-        },
+        mapTypeControlOptions: {mapTypeIds: ['styled_map']},
         disableDefaultUI: true
     });
     map.mapTypes.set('styled_map', styledMapType);
@@ -107,7 +110,8 @@ function generateMarker(results) {
             icon: markerImage,
             title: result.name,
             position: result.geometry.location,
-            id:result.place_id
+            id:result.place_id,
+            animation: google.maps.Animation.DROP,
         });
 
         museumMarkerList.push(marker);
@@ -115,6 +119,7 @@ function generateMarker(results) {
         bounds.extend(result.geometry.location);
 
         marker.addListener('click', function(){
+                 animateMarker(this);
                  populatePanorama(this,infoWindow);
                  populateBizWiki(this,infoWindow);
           });
@@ -149,6 +154,7 @@ function populatePanorama(marker,infoWindow){
     }
     streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
     infoWindow.open(map, marker);
+    console.log(infoWindow.content);
 }
 
 //Populate the business and Wiki info window(if any)
@@ -190,7 +196,9 @@ function populateBizWiki(marker){
          }
        }
     );
+
     var wikiUrl='https://en.wikipedia.org/w/api.php?action=opensearch&search='+marker.title+'&format=json&callback=wikiCallback';
+    //Error handling if no response from wikipedia server
     $.ajax({
         url: wikiUrl,
         dataType:'jsonp',
@@ -209,10 +217,20 @@ function populateBizWiki(marker){
 
             infoWindow.setContent(innerHTML);
             infoWindow.open(map, marker);
-
-    });
+       }).fail(function(err) {
+           innerHTML +='Cannot load the information.';
+           throw err;
+       });
 }
 
+function animateMarker(marker){
+   if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+          setTimeout(function(){marker.setAnimation(null);},4000);
+        }
+}
 
 //Initialize the "From, To, Travel Mode" function
 function initializeTransMode(){
@@ -254,51 +272,36 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay,detailedD
     });
 }
 
+
 var viewModel=function(){
     var self=this;
-
-    // Concern1: to be honest, I feel using ko's array is a worse choice compared
-    //to using DOM to put those markers into HTML tags in the map function above right after the marker was generated one after
-    //another:
-    //var marker = new google.maps.Marker({
-            //     map: map,
-            //     icon: markerImage,
-            //     title: result.name,
-            //     position: result.geometry.location,
-            //     id:result.place_id
-            // });
-    //innerHTML+='<li>marker.title</li'>...
-    //ul.append(innerHTML)...
-
-    //By doing as above, I don't have to use window.onload to wait for the google map to be loaded so that I can
-    //get a stuffed museumMarkerList.If I don't use window.onload, the size of museumMarkerList will be 0 at the following point.
-    //What do you think?
     this.museumList=ko.observableArray([]);
-     window.onload=function(){
+    window.onload=function(){
         museumMarkerList.forEach(function(museumEle){
         self.museumList.push(museumEle);
-     });};
+      });
+    };
 
     this.passMarker=function(){
         var address=this.title;
         geoCoding(address);
     };
 
+    this.name=ko.observable('');
+
     this.processMarker=function(){
-      // Concern2: I tried to use data-bind:textInput to get the value from input,
-      //but the documentation said it won't work with valueUpdate,which I had to use on
-      //input element. What do you think?
-        var address = $('#name').val();
         var listCompare=[];
         for(var i=0;i<museumMarkerList.length;i++){
-          if(museumMarkerList[i].title.toUpperCase()!==name.toUpperCase()){
+          if(museumMarkerList[i].title.toUpperCase()!==self.name().toUpperCase()){
               listCompare.push(museumMarkerList[i].title);
           }
         }
         if(listCompare.length==museumMarkerList.length){
           $('#alert').css('display','block');
           $('#alertClose').on('click',function(){$('#alert').css('display','none');});
-        }else{geoCoding(address);}
+        }else{
+          geoCoding(self.name());
+        }
     };
 
   function geoCoding(name){
@@ -321,25 +324,16 @@ var viewModel=function(){
   }
 
   self.check=function(){
-// Concern3: In the for loop, at the beginning, instead of using DOM, I used
-//self.museumList.remove(self.museumList()[i]) to remove the li items that do not
-//contain the string that the user type in. However, if the user deletes what he typed
-//and retype again, then the remaining li items still won't show up because they were already removed
-//when the user typed first time, which is really bad experience, so here I would rather
-//use DOM just to show/hide the li items rather than delete them. I tried to use data-bind:'css: function'
-//on the li item in html, but the function had to be related to this self.check function
-//since what li items should be shown depends on what the user types in. The situiation became
-//complicated so I gave up using data-bind:'css: function' here. What do you think?
-       var value = $('#name').val().toUpperCase();
-       var li=$(".li");
-        for(var i=0;i<self.museumList().length;i++){
-            if(self.museumList()[i].title.toUpperCase().indexOf(value)<0){
-               li[i].style.display='none';
-            }else{
-               li[i].style.display='inline-block';
-            }
-        }
-   };
+      var compareArray=[];
+         for(var i=0;i<museumMarkerList.length;i++){
+          museumMarkerList[i].setMap(null);
+          if(museumMarkerList[i].title.toUpperCase().indexOf(self.name().toUpperCase())>=0){
+                compareArray.push(museumMarkerList[i]);
+                self.museumList(compareArray);
+                museumMarkerList[i].setMap(map);
+          }
+      }
+  };
 
   this.toggleDisplay=function(){
      $('.nav').toggleClass('showNav');
@@ -355,7 +349,6 @@ var viewModel=function(){
             self.museumList()[i].setMap(map);
             map.setZoom(13);
       }
-
   };
 };
 
