@@ -3,7 +3,12 @@ var sanFrancisco;
 var geocoder;
 var placeService;
 var museumMarkerList=[];
+var infoWindow;
+var innerHTML='';
 
+function googleError(){
+    window.alert("Failed to load Google Map");
+}
 
 function initialize(){
     initializeMap();
@@ -69,6 +74,7 @@ function initializeMap(){
     });
     map.mapTypes.set('styled_map', styledMapType);
     map.setMapTypeId('styled_map');
+    infoWindow=new google.maps.InfoWindow();
 }
 
 //request the data about the museums in San Francisco
@@ -94,7 +100,7 @@ function initializeData(){
 //Generate the markers on the map with the responded data
 function generateMarker(results) {
     var bounds = new google.maps.LatLngBounds();
-    var infoWindow=new google.maps.InfoWindow();
+    // var infoWindow=new google.maps.InfoWindow();
     var directions=document.getElementsByClassName('direction');
     var optionValue;
 
@@ -122,8 +128,8 @@ function generateMarker(results) {
 
         marker.addListener('click', function(){
                  animateMarker(this);
-                 populatePanorama(this,infoWindow);
-                 populateBizWiki(this,infoWindow);
+                 populatePanorama(this);
+                 populateBizWiki(this);
           });
        }
       // map.fitBounds(bounds);
@@ -141,13 +147,14 @@ function generateMarker(results) {
 }
 
 //Populate panorama info window
-function populatePanorama(marker,infoWindow){
+function populatePanorama(marker){
      var streetViewService=new google.maps.StreetViewService();
      var radius=50;
      function getStreetView(data){
         var nearStreetViewLocation = data.location.latLng;
         var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
-        infoWindow.setContent('<div>' + marker.title + '</div><div id="panorama"></div>');
+        innerHTML+='<div>' + marker.title + '</div><div id="panorama"></div>';
+        // infoWindow.setContent('<div>' + marker.title + '</div><div id="panorama"></div>');
         var panoramaOptions = {
                 position: nearStreetViewLocation,
                 pov: {
@@ -158,20 +165,20 @@ function populatePanorama(marker,infoWindow){
         var panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), panoramaOptions);
     }
     streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-    infoWindow.open(map, marker);
-    console.log(infoWindow.content);
+    // infoWindow.open(map, marker);
+    // console.log(infoWindow.content);
 }
 
 //Populate the business and Wiki info window(if any)
 function populateBizWiki(marker){
      var service = new google.maps.places.PlacesService(map);
-     var infoWindow=new google.maps.InfoWindow();
-     var innerHTML;
+     // var infoWindow=new google.maps.InfoWindow();
+     // var innerHTML;
     service.getDetails({
       placeId: marker.id
     }, function(place, status) {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
-          innerHTML= '<div>';
+          innerHTML+= '<div>';
           if (place.name) {
             innerHTML += '<strong>' + place.name + '</strong>';
           }
@@ -213,10 +220,10 @@ function populateBizWiki(marker){
           var articleList=response[1];
             if(articleList.length===0){
                 innerHTML+='<br><div>No results found on wikipedia.</<div></br>';
-                 infoWindow.setContent(innerHTML);
-                 infoWindow.open(map, marker);
-                  return;
-               }
+                infoWindow.setContent(innerHTML);
+                infoWindow.open(map, marker);
+                return;
+            }
             for(var i=0;i<articleList.length;i++){
                var url='https://en.wikipedia.org/wiki/'+articleList[i];
                innerHTML +='<br><div>Wiki: <a href="'+url+'" target="_blank">'+articleList[i]+'</a></li></<div></br>';
@@ -244,8 +251,8 @@ function animateMarker(marker){
 
 //Initialize the "From, To, Travel Mode" function
 function initializeTransMode(){
-    var directionsDisplay = new google.maps.DirectionsRenderer;
-    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer();
+    var directionsService = new google.maps.DirectionsService();
     directionsDisplay.setMap(map);
     var detailedDirection=document.getElementById('detailedDirectiron');
     var closeDirection=document.getElementById('closeDirection');
