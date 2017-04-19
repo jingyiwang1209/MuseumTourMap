@@ -14,7 +14,7 @@ main {height:100%; position: relative;}
 
 .map {
   height: 100%;
-  width:100%;
+  width: 100%;
   transition: height 0.4s ease;
 }
 
@@ -22,7 +22,7 @@ main {height:100%; position: relative;}
   height:70%;
 }
 
-.search {
+.searchIcon {
   position: fixed;
   right:5%;
   top:30%;
@@ -39,7 +39,7 @@ main {height:100%; position: relative;}
   transition: transform 0.3s ease;
 }
 
-.search:hover, .toggleMarkers:hover {
+.searchIcon:hover, .toggleMarkers:hover {
   cursor: pointer;
   transform: scale3d(1.5,1.5,1);
 }
@@ -127,6 +127,9 @@ select, strong {
   border-radius: 10px  0  0 10px;
 }
 
+#closeDirection {
+  display: none;
+}
 span {
   font-size: 2rem;
 }
@@ -134,7 +137,7 @@ span:hover {
   cursor: pointer;
 }
 
-#alert{
+.alert{
   position:absolute;
   left:20%;
   top:40%;
@@ -142,11 +145,11 @@ span:hover {
   z-index: 1000;
   color:#fff;
   padding:5px;
-  display: none;
 }
 
-#alert::after{
+.alert::after{
   content: 'Sorry, the museum does not exist. Please check your type.';
   font-size: 2rem;
 }
+
 

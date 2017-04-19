@@ -85,6 +85,8 @@ function initializeData(){
     function getResults(results,status){
           if (status == google.maps.places.PlacesServiceStatus.OK){
               generateMarker(results);
+          }else{
+            window.alert('Place service request failed due to ' + status);
           }
     }
 }
@@ -124,7 +126,10 @@ function generateMarker(results) {
                  populateBizWiki(this,infoWindow);
           });
        }
-      map.fitBounds(bounds);
+      // map.fitBounds(bounds);
+      google.maps.event.addDomListener(window, 'resize', function() {
+         map.fitBounds(bounds);
+      });
       map.setCenter(sanFrancisco);
       map.setZoom(13);
       for(var j=0;j<museumMarkerList.length;j++){
@@ -193,6 +198,8 @@ function populateBizWiki(marker){
                 place.opening_hours.weekday_text[6];
            }
         innerHTML += '</div>';
+         }else{
+            window.alert('Place service request failed due to ' + status);
          }
        }
     );
@@ -205,32 +212,34 @@ function populateBizWiki(marker){
         method:'GET'}).done(function(response){
           var articleList=response[1];
             if(articleList.length===0){
-                innerHTML+='<br><div>No results found in wikipedia.</<div></br>';
+                innerHTML+='<br><div>No results found on wikipedia.</<div></br>';
                  infoWindow.setContent(innerHTML);
                  infoWindow.open(map, marker);
                   return;
                }
             for(var i=0;i<articleList.length;i++){
                var url='https://en.wikipedia.org/wiki/'+articleList[i];
-               innerHTML +='<div>Wiki: <a href="'+url+'" target="_blank">'+articleList[i]+'</a></li>';
+               innerHTML +='<br><div>Wiki: <a href="'+url+'" target="_blank">'+articleList[i]+'</a></li></<div></br>';
             }
 
             infoWindow.setContent(innerHTML);
             infoWindow.open(map, marker);
        }).fail(function(err) {
-           innerHTML +='Cannot load the information.';
+           innerHTML +='<br><div>Cannot load wikipedia results due to error(s).</<div></br>';
+           infoWindow.setContent(innerHTML);
+           infoWindow.open(map, marker);
            throw err;
        });
 }
 
 //Animate the marker when it is clicked
 function animateMarker(marker){
-   if (marker.getAnimation() !== null) {
+    if (marker.getAnimation() !== null) {
           marker.setAnimation(null);
-        } else {
+    }else{
           marker.setAnimation(google.maps.Animation.BOUNCE);
-          setTimeout(function(){marker.setAnimation(null);},4000);
-        }
+          setTimeout(function(){marker.setAnimation(null);},7000);
+    }
 }
 
 //Initialize the "From, To, Travel Mode" function
@@ -275,22 +284,37 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay,detailedD
 
 
 var viewModel=function(){
+
     var self=this;
-    this.museumList=ko.observableArray([]);
+
+    self.museumList=ko.observableArray([]);
+
     window.onload=function(){
         museumMarkerList.forEach(function(museumEle){
         self.museumList.push(museumEle);
       });
     };
 
-    this.passMarker=function(){
+    self.triggerMarker=function(){
         var address=this.title;
         geoCoding(address);
     };
 
-    this.name=ko.observable('');
+    self.name=ko.observable('');
 
-    this.processMarker=function(){
+    self.filteredMuseumList = ko.computed(function() {
+          return ko.utils.arrayFilter(self.museumList(), function(museumMarker) {
+              museumMarker.setMap(null);
+              if ( museumMarker.title.toUpperCase().match(self.name().toUpperCase())){
+                   museumMarker.setMap(map);
+                   return museumMarker;
+              }
+         });
+    });
+
+    self.visibleAlert = ko.observable(false);
+
+    self.verifyUserInput=function(){
         var listCompare=[];
         for(var i=0;i<museumMarkerList.length;i++){
           if(museumMarkerList[i].title.toUpperCase()!==self.name().toUpperCase()){
@@ -298,16 +322,15 @@ var viewModel=function(){
           }
         }
         if(listCompare.length==museumMarkerList.length){
-          $('#alert').css('display','block');
-          $('#alertClose').on('click',function(){$('#alert').css('display','none');});
+          self.visibleAlert(!self.visibleAlert());
         }else{
           geoCoding(self.name());
         }
     };
 
-  function geoCoding(name){
-    geocoder = new google.maps.Geocoder();
-      geocoder.geocode( { 'address': name}, function(results, status) {
+   function geoCoding(name){
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { 'address': name}, function(results, status) {
           if (status == 'OK') {
             map.setCenter(results[0].geometry.location);
             map.setZoom(16);
@@ -316,6 +339,7 @@ var viewModel=function(){
                   if(museumMarkerList[i].title.toUpperCase()==name.toUpperCase()){
                         museumMarkerList[i].position=results[0].geometry.location;
                         museumMarkerList[i].setMap(map);
+                        google.maps.event.trigger(museumMarkerList[i], 'click');
                   }
             }
           }else {
@@ -324,33 +348,25 @@ var viewModel=function(){
       });
   }
 
-  self.check=function(){
-      var compareArray=[];
-         for(var i=0;i<museumMarkerList.length;i++){
-          museumMarkerList[i].setMap(null);
-          if(museumMarkerList[i].title.toUpperCase().indexOf(self.name().toUpperCase())>=0){
-                compareArray.push(museumMarkerList[i]);
-                self.museumList(compareArray);
-                museumMarkerList[i].setMap(map);
-          }
-      }
-  };
+    self.closeAlert=function(){
+       self.visibleAlert(false);
+    };
 
-  this.toggleDisplay=function(){
-     $('.nav').toggleClass('showNav');
-     $('.map').toggleClass('shrinkMap');
-  };
+    self.navIsActive=ko.observable(false);
 
-  this.translatePanel=function(){
-       $('.nav').toggleClass('navDisplay');
-  };
+    self.mapIsActive=ko.observable(false);
 
-  this.toggleMarkers=function(){
-      for(var i=0;i<self.museumList().length;i++){
-            self.museumList()[i].setMap(map);
-            map.setZoom(13);
-      }
-  };
+    self.toggleDisplay=function(data,event){
+        data.navIsActive(!data.navIsActive());
+        data.mapIsActive(!data.mapIsActive());
+    };
+
+    self.toggleMarkers=function(){
+       for(var i=0;i<self.museumList().length;i++){
+              self.museumList()[i].setMap(map);
+              map.setZoom(13);
+       }
+    };
 };
 
 
