@@ -4,8 +4,6 @@ var geocoder;
 var placeService;
 var museumMarkerList = [];
 var infoWindow;
-var start;
-var end;
 
 function googleError() {
     window.alert("Failed to load Google Map");
