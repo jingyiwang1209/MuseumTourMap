@@ -4,6 +4,8 @@ var geocoder;
 var placeService;
 var museumMarkerList = [];
 var infoWindow;
+var start;
+var end;
 
 function googleError() {
     window.alert("Failed to load Google Map");
@@ -264,9 +266,11 @@ function animateMarker(marker) {
 }
 
 //Initialize the "From, To, Travel Mode" function
+//Note: I think it is the best to use DOM here. I tried to wrap them in View Model,
+//but it just made things more complicated.
 function initializeTransMode() {
-    var directionsDisplay = new google.maps.DirectionsRenderer();
-    var directionsService = new google.maps.DirectionsService();
+   directionsDisplay = new google.maps.DirectionsRenderer();
+   directionsService = new google.maps.DirectionsService();
     directionsDisplay.setMap(map);
     var detailedDirection = document.getElementById('detailedDirectiron');
     var closeDirection = document.getElementById('closeDirection');
@@ -287,8 +291,8 @@ function initializeTransMode() {
 
 //Calculate and display the route on the map
 function calculateAndDisplayRoute(directionsService, directionsDisplay, detailedDirection) {
-    var start = document.getElementById('start').value + ', San Francisco';
-    var end = document.getElementById('end').value + ', San Francisco';
+    start = document.getElementById('start').value + ', San Francisco';
+    end = document.getElementById('end').value + ', San Francisco';
 
     directionsDisplay.setMap(map);
     detailedDirection.style.display = 'block';
@@ -318,6 +322,17 @@ var ViewModel = function() {
             self.museumList.push(museumEle);
         });
     };
+
+    // self.selectedStartValue=ko.observable();
+    // self.selectedEndValue=ko.observable();
+
+    // self.startValueChanged=function(){
+    //     start=self.selectedStartValue();
+    // };
+
+    // self.endValueChanged=function(){
+    //     end=self.selectedStartValue();
+    // };
 
     self.triggerMarker = function() {
         var address = this.title;
