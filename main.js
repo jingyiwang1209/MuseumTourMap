@@ -263,9 +263,7 @@ function animateMarker(marker) {
     }
 }
 
-//Initialize the "From, To, Travel Mode" function
-//Note: I think it is the best to use DOM here. I tried to wrap them in View Model,
-//but it just made things more complicated.
+//Initialize the "From, To, Travel Mode" function.
 function initializeTransMode() {
    directionsDisplay = new google.maps.DirectionsRenderer();
    directionsService = new google.maps.DirectionsService();
@@ -320,17 +318,6 @@ var ViewModel = function() {
             self.museumList.push(museumEle);
         });
     };
-
-    // self.selectedStartValue=ko.observable();
-    // self.selectedEndValue=ko.observable();
-
-    // self.startValueChanged=function(){
-    //     start=self.selectedStartValue();
-    // };
-
-    // self.endValueChanged=function(){
-    //     end=self.selectedStartValue();
-    // };
 
     self.triggerMarker = function() {
         var address = this.title;
