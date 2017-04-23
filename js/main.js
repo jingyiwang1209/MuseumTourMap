@@ -263,7 +263,8 @@ function animateMarker(marker) {
     }
 }
 
-//Initialize the "From, To, Travel Mode" function
+
+//Initialize the "From, To, Travel Mode" function.
 function initializeTransMode() {
    directionsDisplay = new google.maps.DirectionsRenderer();
    directionsService = new google.maps.DirectionsService();
