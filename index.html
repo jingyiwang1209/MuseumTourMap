@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="Museum tour map">
+    <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Museum tour map</title>
+    <title>Museum Tour Map</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/media.css">
 </head>
@@ -15,18 +15,17 @@
     <div class='alert' data-bind="visible: visibleAlert"><span class='alertClose' data-bind='click: closeAlert'>&times;&nbsp;</span></div>
     <div class='searchIcon' data-bind='click: toggleDisplay'><img src='image/searchbutton.png' alt='search icon'></div>
     <div class='toggleMarkers' data-bind='click:toggleMarkers'><img src='image/museumButton.png' alt='show All Markers icon'></div>
-    <div id='detailedDirectiron' class='detailedDirectiron'><span id='closeDirection'>&nbsp;&times;</span></div>
+    <div id='directionZone' class='directionZone'><span id='closeDirection'>&nbsp;&times;</span></div>
+
     <div id="directionPanel">
-        <!-- data-bind="options: museumList, optionsText: function(item) {
-                       return item.title}, optionsCaption: 'Please choose...'" -->
         <strong>From:</strong>
         <select id="start" class='direction'></select>
         <!-- <select data-bind="options: museumList, optionsText: function(item) {
-                       return item.title}, value: selectedStartValue, event:{change: startValueChanged}"></select> -->
+                       return item.name}, value: selectedStartValue, event:{change: startValueChanged}"></select> -->
         <strong>To:</strong>
         <select id="end" class='direction'></select>
         <!-- <select data-bind="options: museumList, optionsText: function(item) {
-                       return item.title}, value: selectedEndValue, event:{change: endValueChanged}"></select> -->
+                       return item.name}, value: selectedEndValue, event:{change: endValueChanged}"></select> -->
         <strong>Travel mode: </strong>
         <select id="mode" class='mode'>
         <option value="DRIVING">Driving</option>
@@ -38,7 +37,6 @@
 
     <main>
         <div id='map' class='map' data-bind="css : {'shrinkMap' : mapIsActive}"></div>
-
         <div class='nav' data-bind="css : {'showNav' : navIsActive}">
             <form data-bind='submit: verifyUserInput'>
                 <label><input id='name' type='text' placeholder="Museum name" data-bind="textInput:name"></label>
@@ -46,16 +44,14 @@
             </form>
 
             <ul id='ul' data-bind='foreach: filteredMuseumList'>
-                <li class='li' data-bind="text: $data.title, click:$parent.triggerMarker"></li>
+                <li class='li' data-bind="text: $data.name, click:$data.triggerMarker"></li>
             </ul>
         </div>
-
     </main>
-
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-    <script src="libs/knockout-3.4.2.js"></script>
-    <script src="js/main.js"></script>
-    <script async src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places&key=AIzaSyDi4h3kLTvET6li9iunTesuDfOgBMVWXqo&callback=initialize" onerror="googleError()"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+    <script src="build/main.bundle.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places&key=AIzaSyDi4h3kLTvET6li9iunTesuDfOgBMVWXqo&callback=initMap" onerror="loadError()"></script>
 </body>
 
 </html>

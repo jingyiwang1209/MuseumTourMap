@@ -1,0 +1,21 @@
+{
+  "name": "museumtoures6",
+  "version": "1.0.0",
+  "description": "## This is an app for anyone that is interested in planning a tour of the museums in San Francisco or for anyone that just wants to know more about them.",
+  "main": "index.js",
+  "scripts": {
+    "babel": "babel --presets es2015 js/main.js -o build/main.bundle.js",
+    "start": "http-server",
+    "webpack": "webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "http-server": "^0.9.0",
+    "webpack": "^2.4.1"
+  }
+}

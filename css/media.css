@@ -2,6 +2,10 @@
    select {
     display: block;
    }
+
+   #directionZone {
+    width:50%;
+  }
 }
 
 
