@@ -3,7 +3,7 @@
 ## This is an app for anyone that is interested in planning a tour of the museums in San Francisco or for anyone that just wants to know more about them.
 
 ## How to:
-### 1. Open the index.html file with a browser. There will be a map with multiple markers, by default. The markers mark all the museums in San Francisco (radius:5000).
+### 1. Open the index.html file with a browser. There will be a map with multiple markers, by default. The markers mark all the museums in San Francisco.
 
 ### 2. Click on any one of the markers. An info window about the clicked museum will appear. It includes a panorama of the museum, the business info and the wiki info (if any) about the museum. To make the browser revert to the default presence of the markers and the map, click the 'Museum' Icon on the right side of the map.
 
